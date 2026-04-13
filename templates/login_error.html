@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Erreur connexion</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    color:white;
+}
+
+.container{
+    width:90%;
+    max-width:380px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    padding:30px 20px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+}
+
+.icon{
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:50%;
+    background:linear-gradient(135deg,#ff1744,#f44336);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+h2{
+    margin:10px 0;
+}
+
+p{
+    font-size:14px;
+    opacity:0.8;
+    margin-bottom:25px;
+}
+
+.btn{
+    display:block;
+    width:100%;
+    padding:14px;
+    margin-bottom:12px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.retry{
+    background:#00c853;
+    color:white;
+}
+
+.register{
+    background:rgba(255,255,255,0.1);
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="icon">
+        <i class="fas fa-exclamation"></i>
+    </div>
+
+    <h2>Connexion échouée</h2>
+
+    <p>Numéro ou mot de passe incorrect</p>
+
+    <a href="/login" class="btn retry">
+        <i class="fas fa-rotate-right"></i> Réessayer
+    </a>
+
+    <a href="/register" class="btn register">
+        <i class="fas fa-user-plus"></i> Créer un compte
+    </a>
+
+</div>
+
+</body>
+</html>

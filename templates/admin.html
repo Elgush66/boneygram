@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#00c853">
+
+<!-- iOS support -->
+<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:16px;
+}
+
+/* ===== HEADER ===== */
+.header{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+/* ===== SEARCH (PREMIUM) ===== */
+.search-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:rgba(255,255,255,0.08);
+    padding:14px;
+    border-radius:16px;
+    margin-bottom:12px;
+    backdrop-filter:blur(10px);
+}
+
+.search-box input{
+    border:none;
+    background:transparent;
+    color:white;
+    width:100%;
+    outline:none;
+    font-size:14px;
+}
+
+.filter-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,0.08);
+    padding:14px;
+    border-radius:16px;
+    margin-bottom:20px;
+    backdrop-filter:blur(10px);
+}
+
+.filter-box select{
+    background:transparent;
+    border:none;
+    color:white;
+    outline:none;
+}
+
+/* ===== CARD ===== */
+.card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    padding:18px;
+    border-radius:20px;
+    margin-bottom:16px;
+}
+
+/* ===== TOP ===== */
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.left{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#00c853;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.name{
+    font-weight:600;
+}
+
+.label{
+    font-size:12px;
+    opacity:0.6;
+}
+
+/* ===== RIGHT ===== */
+.right{
+    text-align:right;
+}
+
+.profit{
+    color:#00e676;
+    font-weight:bold;
+}
+
+/* ===== STATUS ===== */
+.badge{
+    margin-top:5px;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    display:inline-block;
+}
+
+.success{background:#00c853;}
+.pending{background:#ff9800;}
+.failed{background:#f44336;}
+
+/* ===== SECTIONS ===== */
+.section{
+    margin-top:14px;
+    line-height:1.6;
+}
+
+/* ===== ICON LINE ===== */
+.icon-line{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    opacity:0.9;
+}
+
+/* ===== AMOUNT ===== */
+.amount{
+    margin-top:14px;
+    font-weight:600;
+    font-size:15px;
+}
+
+/* ===== ACTIONS ===== */
+.actions{
+    margin-top:16px;
+}
+
+.btn{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:none;
+    font-weight:600;
+    color:white;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+/* buttons */
+.approve{background:#00c853;}
+.reject{background:#ff1744;}
+.done{background:#555;}
+
+/* ===== SPINNER ===== */
+.loading::after{
+    content:"";
+    width:18px;
+    height:18px;
+    border:3px solid white;
+    border-top:3px solid transparent;
+    border-radius:50%;
+    position:absolute;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+/* ===== CONTAINER ===== */
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:18px;
+}
+
+/* ===== HEADER ===== */
+.header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:white;
+}
+
+.header-icon{
+    font-size:20px;
+    color:#00e5ff;
+}
+
+/* ===== GRID ===== */
+.stats-grid{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+/* ===== CARD ===== */
+.stat-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px;
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.2);
+    transition:0.25s;
+}
+
+.stat-card:hover{
+    transform:translateY(-2px) scale(1.01);
+}
+
+/* ===== ICON ===== */
+.stat-icon{
+    width:50px;
+    height:50px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+}
+
+/* COLORS */
+.usd{
+    background:linear-gradient(135deg,#00c853,#00e676);
+    color:white;
+}
+
+.kes{
+    background:linear-gradient(135deg,#00b0ff,#2979ff);
+    color:white;
+}
+
+.profit-icon{
+    background:linear-gradient(135deg,#ffab00,#ff6f00);
+    color:white;
+}
+
+/* ===== TEXT ===== */
+.stat-card p{
+    margin:0;
+    font-size:13px;
+    color:#cfd8dc;
+}
+
+.stat-card h2{
+    margin:4px 0 0;
+    font-size:22px;
+    font-weight:700;
+    color:white;
+}
+
+/* ===== PROFIT SPECIAL ===== */
+.stat-card.profit h2{
+    color:#00e676;
+}
+
+.card{
+    padding:18px;
+    border-radius:18px;
+    margin-bottom:16px;
+    margin-left:2px;
+    margin-right:2px;
+}
+
+.actions{
+    margin-top:16px;
+}
+
+/* FIX BUTTON WIDTH */
+.btn,
+.done{
+    width:100%;
+    box-sizing:border-box;
+}
+
+/* ADD SPACE INSIDE */
+.done{
+    padding:14px;
+    border-radius:14px;
+    text-align:center;
+    background:#4a4a4a;
+    color:#ddd;
+    font-weight:600;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+input, select, textarea{
+    font-size:16px !important;
+}
+
+html, body{
+    height:100%;
+    overflow-x:hidden;
+}
+
+/* Prevent zoom bounce */
+body{
+    position:relative;
+}
+
+/* Prevent weird scroll jump */
+.container{
+    padding-bottom:80px;
+}
+
+.search input{
+    padding:14px 16px;
+    border-radius:14px;
+    border:none;
+    outline:none;
+    font-size:16px;
+    width:100%;
+
+    background:rgba(255,255,255,0.08);
+    color:white;
+
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+
+/* placeholder */
+.search input::placeholder{
+    color:#bbb;
+}
+
+*{
+    -webkit-tap-highlight-color: transparent;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <i class="fas fa-shield-halved header-icon"></i>
+        <span>Admin Dashboard</span>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon usd">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div>
+                <p>Total USD</p>
+                <h2>{{ total_usd }}</h2>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon kes">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div>
+                <p>Total KES</p>
+                <h2>{{ total_kes }}</h2>
+            </div>
+        </div>
+
+        <div class="stat-card profit">
+            <div class="stat-icon profit-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div>
+                <p>Profit</p>
+                <h2>{{ total_profit }} USD</h2>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SEARCH -->
+<div class="search-box">
+    <i class="fas fa-search"></i>
+    <input type="text" id="searchInput" placeholder="Rechercher...">
+</div>
+
+<div class="filter-box">
+    <div><i class="fas fa-filter"></i> Filtrer</div>
+    <select id="filterStatus">
+        <option value="">Tous</option>
+        <option value="En attente">En attente</option>
+        <option value="Validé">Validé</option>
+        <option value="Rejeté">Rejeté</option>
+    </select>
+</div>
+
+<!-- CARDS -->
+<div id="transactionsContainer">
+
+{% for t in transactions %}
+<div class="card">
+
+    <!-- TOP -->
+    <div class="top">
+        <div class="left">
+            <div class="avatar">{{ t.nom[0] }}</div>
+            <div>
+                <div class="name">{{ t.nom }}</div>
+                <div class="label">Expéditeur</div>
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="profit">+ {{ "%.2f"|format(t.profit) }} USD</div>
+
+            <div class="badge
+            {% if t.statut == 'Validé' %}success
+            {% elif t.statut == 'Rejeté' %}failed
+            {% else %}pending
+            {% endif %}
+            ">
+            {{ t.statut }}
+            </div>
+        </div>
+    </div>
+
+    <!-- SENDER -->
+    <div class="section">
+        <div class="icon-line">
+            <i class="fas fa-phone"></i>
+            <a href="tel:{{ t.telephone }}" style="color:#90caf9;">
+                {{ t.telephone }}
+            </a>
+        </div>
+
+        {% if t.email %}
+        <div class="icon-line">
+            <i class="fas fa-envelope"></i>
+            {{ t.email }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- RECEIVER -->
+    <div class="section">
+        <div class="label">Destinataire</div>
+
+        <div class="icon-line">
+            <i class="fas fa-user"></i>
+            {{ t.receiver_name }}
+        </div>
+
+        <div class="icon-line">
+            <i class="fas fa-phone"></i>
+            {{ t.receiver_phone }}
+        </div>
+    </div>
+
+    <!-- AMOUNT -->
+    <div class="amount">
+        {{ t.montant_usd }} USD → {{ t.montant_kes }} KES
+    </div>
+
+    <!-- ACTION -->
+    <div class="actions">
+        {% if t.statut == "En attente" %}
+        <button class="btn approve" onclick="handleClick(this,'/approve/{{ t.id }}')">
+            <i class="fas fa-check"></i> Approuver
+        </button>
+
+        <button class="btn reject" onclick="handleClick(this,'/reject/{{ t.id }}')">
+            <i class="fas fa-times"></i> Rejeter
+        </button>
+        {% else %}
+        <div class="btn done">
+            <i class="fas fa-lock"></i> Action terminée
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endfor %}
+
+</div>
+
+<script>
+
+/* FILTER */
+const searchInput = document.getElementById("searchInput");
+const filterStatus = document.getElementById("filterStatus");
+
+searchInput.addEventListener("input", filter);
+filterStatus.addEventListener("change", filter);
+
+function filter(){
+let search = searchInput.value.toLowerCase();
+let status = filterStatus.value;
+
+document.querySelectorAll(".card").forEach(card=>{
+let text = card.innerText.toLowerCase();
+
+let show = text.includes(search) &&
+(status=="" || text.includes(status.toLowerCase()));
+
+card.style.display = show ? "block" : "none";
+});
+}
+
+/* BUTTON LOADING */
+function handleClick(btn, url){
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement';
+    setTimeout(()=> window.location.href = url, 500);
+}
+
+</script>
+
+<script>
+function loadTransactions(){
+
+    fetch("/transactions_data") // new route
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById("transactionsContainer").innerHTML = html;
+    });
+}
+
+// 🔥 AUTO REFRESH EVERY 5 SECONDS
+setInterval(loadTransactions, 5000);
+</script>
+
+<button id="installBtn" class="install-btn" style="display:none;">
+    📲 Installer l'application
+</button>
+
+<script>
+let deferredPrompt;
+
+// 🔥 ANDROID INSTALL PROMPT
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+    }
+});
+
+// 🔥 REGISTER SERVICE WORKER
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js');
+}
+</script>
+
+<!-- 🔥 iOS INSTALL POPUP -->
+<div id="iosInstall" class="ios-popup" style="display:none;">
+    <p>
+        📲 Installer BoneyGram<br><br>
+        👉 Appuyez sur <b>Partager</b> (⬆️)<br>
+        👉 Puis <b>Ajouter à l’écran d’accueil</b>
+    </p>
+</div>
+
+<script>
+// Detect iPhone
+function isIos() {
+  return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+}
+
+function isInStandaloneMode() {
+  return ('standalone' in window.navigator) && (window.navigator.standalone);
+}
+
+// Show popup
+if (isIos() && !isInStandaloneMode()) {
+    setTimeout(() => {
+        document.getElementById("iosInstall").style.display = "block";
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
+</body>
+</html>

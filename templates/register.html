@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer un compte</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+    background:linear-gradient(135deg,#eef2f7,#dfe9f3);
+}
+
+/* ===== CONTAINER ===== */
+.container{
+    max-width:420px;
+    margin:auto;
+    padding:20px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:12px 14px;
+    margin-bottom:20px;
+
+    background:white;
+    border-radius:16px;
+
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* BACK BUTTON */
+.back-btn{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:none;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f1f3f6;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.back-btn i{
+    font-size:16px;
+    color:#333;
+}
+
+.back-btn:active{
+    transform:scale(0.9);
+}
+
+/* TITLE */
+.title{
+    font-size:18px;
+    font-weight:600;
+}
+
+/* ===== CARD ===== */
+.card{
+    background:white;
+    padding:22px;
+    border-radius:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+.section-title{
+    margin-bottom:18px;
+    font-size:20px;
+    font-weight:700;
+}
+
+/* ===== INPUT ===== */
+.input-group{
+    position:relative;
+    margin-bottom:14px;
+}
+
+.input-group i{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#00c853;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px 14px 14px 40px;
+
+    border-radius:14px;
+    border:none;
+    outline:none;
+
+    background:#f4f6f9;
+
+    font-size:15px;
+}
+
+/* FOCUS */
+.input-group input:focus{
+    background:#eef7ff;
+    box-shadow:0 0 0 2px rgba(0,176,255,0.2);
+}
+
+/* ===== BUTTON ===== */
+button{
+    width:100%;
+    padding:15px;
+
+    border:none;
+    border-radius:14px;
+
+    background:linear-gradient(135deg,#ff9800,#ff6f00);
+    color:white;
+
+    font-size:16px;
+    font-weight:600;
+
+    cursor:pointer;
+    transition:0.2s;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+/* CLICK EFFECT */
+button:active{
+    transform:scale(0.97);
+}
+
+/* LOADING */
+.loading{
+    pointer-events:none;
+    opacity:0.8;
+}
+
+/* SPINNER */
+.loading::after{
+    content:"";
+    width:18px;
+    height:18px;
+    border:3px solid white;
+    border-top:3px solid transparent;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <button class="back-btn" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="title">Créer un compte</div>
+    </div>
+
+    <!-- CARD -->
+    <div class="card">
+
+        <h3 class="section-title">Créer un compte</h3>
+
+        <form method="POST" onsubmit="handleSubmit(this)">
+
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" name="nom" required placeholder="Nom complet">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-phone"></i>
+                <input type="text" name="telephone" required placeholder="Téléphone">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" placeholder="Email (optionnel)">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" required placeholder="Mot de passe">
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <i class="fas fa-user-plus"></i> Créer un compte
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+function handleSubmit(form){
+    const btn = document.getElementById("submitBtn");
+    btn.classList.add("loading");
+    btn.innerHTML = "Création...";
+}
+</script>
+
+</body>
+</html>

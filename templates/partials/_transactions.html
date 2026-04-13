@@ -1,0 +1,63 @@
+{% for t in transactions %}
+<div class="card">
+
+    <div class="top">
+        <div class="left">
+            <div class="avatar">{{ t.nom[0] }}</div>
+            <div>
+                <div class="name">{{ t.nom }}</div>
+                <div class="label">Expéditeur</div>
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="profit-text">
+                + {{ "%.2f"|format(t.profit) }} USD
+            </div>
+
+            <div class="badge
+                {% if t.statut == 'Validé' %}success
+                {% elif t.statut == 'Rejeté' %}failed
+                {% else %}pending
+                {% endif %}
+            ">
+                {{ t.statut }}
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <i class="fas fa-phone"></i>
+        <a href="tel:{{ t.telephone }}">{{ t.telephone }}</a>
+    </div>
+
+    {% if t.email %}
+    <div class="section">
+        <i class="fas fa-envelope"></i>
+        {{ t.email }}
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="label">Destinataire</div>
+        <div><i class="fas fa-user"></i> {{ t.receiver_name }}</div>
+        <div><i class="fas fa-phone"></i> {{ t.receiver_phone }}</div>
+    </div>
+
+    <div class="amount">
+        {{ t.montant_usd }} USD → {{ t.montant_kes }} KES
+    </div>
+
+    <div class="actions">
+        {% if t.statut == "En attente" %}
+        <a href="/approve/{{ t.id }}" class="btn approve">Approuver</a>
+        <a href="/reject/{{ t.id }}" class="btn reject">Rejeter</a>
+        {% else %}
+        <div class="btn done">
+            <i class="fas fa-lock"></i> Action terminée
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endfor %}

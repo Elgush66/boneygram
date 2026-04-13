@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Confirmation</title>
+
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* CARD */
+.success-card{
+    text-align:center;
+    padding:25px;
+}
+
+/* ICON */
+.success-icon{
+    font-size:60px;
+    color:#00c853;
+    margin-bottom:10px;
+}
+
+/* TITLE */
+.success-card h2{
+    margin:10px 0;
+    font-weight:700;
+}
+
+/* SUBTEXT */
+.success-card p{
+    color:#666;
+    font-size:14px;
+}
+
+/* INFO BOX */
+.info-box{
+    background:#f5f7fb;
+    padding:16px;
+    border-radius:16px;
+    margin-top:15px;
+    text-align:left;
+}
+
+/* MPESA */
+.mpesa-number{
+    color:#00c853;
+    font-weight:700;
+    font-size:18px;
+    margin:5px 0;
+}
+
+/* BIG ACTION TEXT */
+.highlight{
+    font-weight:600;
+    font-size:15px;
+}
+
+/* BUTTONS */
+.whatsapp-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    background:linear-gradient(135deg,#25d366,#128c7e);
+    color:white;
+    padding:16px;
+    border-radius:16px;
+    margin-top:20px;
+
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* HOME BUTTON */
+.home-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    background:#eef2f7;
+    color:#333;
+    padding:14px;
+    border-radius:14px;
+    margin-top:12px;
+
+    text-decoration:none;
+    font-weight:600;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="card success-card">
+
+    <!-- ICON -->
+    <i class="fas fa-check-circle success-icon"></i>
+
+    <!-- TITLE -->
+    <h2>Transaction initiée</h2>
+    <p>Finalisez votre paiement pour compléter l’envoi.</p>
+
+    <!-- PAYMENT DETAILS -->
+    <div class="info-box">
+
+        <p><b>Envoyez {{ montant }} USD au :</b></p>
+
+        <p class="mpesa-number">+243 839 933 114</p>
+
+        <p><b>Nom :</b> Alex Mwana Kasongo (M-pesa)</p>
+
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="info-box">
+        <p class="highlight">
+            Après paiement, votre transfert vers <b>{{ receiver_name }}</b> sera traité immédiatement.
+        </p>
+    </div>
+
+    <!-- WHATSAPP -->
+    <a 
+    class="whatsapp-btn"
+    href="https://wa.me/243991880511?text=Salut BoneyGram, j’ai effectué un paiement de {{ montant }} USD pour {{ receiver_name }} ({{ receiver_phone }})"
+    target="_blank"
+    >
+        <i class="fab fa-whatsapp"></i>
+        Confirmer via WhatsApp
+    </a>
+
+    <!-- HOME BUTTON -->
+    <a href="/" class="home-btn">
+        <i class="fas fa-home"></i>
+        Retour à l'accueil
+    </a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#00c853">
+
+<!-- iOS support -->
+<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>BoneyGram</title>
+
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- APP BAR -->
+<div class="app-bar">
+
+    <!-- 🔥 BACK ONLY FOR STEP 2 & 3 -->
+    <div class="back-icon" id="backBtn" onclick="prevStep()" style="display:none;">
+        <i class="fas fa-arrow-left"></i>
+    </div>
+
+    <img src="/static/images/logo.png" class="app-logo">
+    <span class="app-title">BoneyGram</span>
+</div>
+
+<form method="POST" id="multiForm">
+
+<!-- STEP 1 -->
+<div class="step active">
+
+<h3 class="section-title">Envoyer de l'argent</h3>
+
+<div class="currency-box">
+    <div class="currency">
+        <div class="currency-label">🇨🇩 USD</div>
+        <input type="number" id="montant" name="montant" required>
+    </div>
+
+    <div class="swap">
+        <i class="fas fa-exchange-alt"></i>
+    </div>
+
+    <div class="currency">
+        <div class="currency-label">🇰🇪 KES</div>
+        <input type="text" id="resultat" readonly>
+    </div>
+</div>
+
+<div class="rate-box">
+    <p>Taux: <b>1 USD = 125 KES</b></p>
+    <p>Frais de service: <b>5%</b></p>
+</div>
+
+<button type="button" onclick="validateStep1()" class="main-btn">Suivant</button>
+
+<!-- TRUST -->
+<div class="trust-box">
+    <p class="trust-title">
+        Envoyez l’argent facilement dans plusieurs pays d’Afrique
+        <i class="fas fa-globe-africa"></i>
+    </p>
+
+    <div class="trust-stats">
+        <div class="stat"><i class="fas fa-globe-africa"></i> +15 pays</div>
+        <div class="stat"><i class="fas fa-exchange-alt"></i> +10M transactions</div>
+        <div class="stat"><i class="fas fa-users"></i> +50K utilisateurs</div>
+    </div>
+
+    <a href="https://chat.whatsapp.com/EAGgmUDADDCLwcVeuHdEfS?mode=gi_t" 
+       target="_blank" class="whatsapp-btn">
+        <i class="fab fa-whatsapp"></i> Intégrer notre groupe WhatsApp
+    </a>
+</div>
+
+</div>
+
+<!-- STEP 2 -->
+<div class="step">
+
+<h3 class="section-title">Vos informations</h3>
+
+{% if session.get("user_id") %}
+<input type="hidden" name="nom" value="{{ session.nom }}">
+<input type="hidden" name="telephone" value="{{ session.telephone }}">
+<input type="hidden" name="email" value="{{ session.email }}">
+
+<p style="text-align:center;color:#00c853;">✔ Informations enregistrées</p>
+
+{% else %}
+<div class="input-group">
+<i class="fas fa-user"></i>
+<input type="text" id="nom" name="nom" required>
+<label>Votre nom complet</label>
+</div>
+
+<div class="input-group">
+<i class="fas fa-phone"></i>
+<input type="text" id="telephone" name="telephone" required>
+<label>Votre numéro de téléphone</label>
+</div>
+
+<div class="input-group">
+<i class="fas fa-envelope"></i>
+<input type="email" name="email">
+<label>Votre address email</label>
+</div>
+{% endif %}
+
+<button type="button" onclick="validateStep2()">Suivant</button>
+
+</div>
+
+<!-- STEP 3 -->
+<div class="step">
+
+<h3 class="section-title">Destinataire</h3>
+
+<div class="input-group">
+<i class="fas fa-user-check"></i>
+<input type="text" id="receiver_name" name="receiver_name" required>
+<label>Nom du destinataire</label>
+</div>
+
+<div class="input-group">
+<i class="fas fa-mobile-alt"></i>
+<input type="text" id="receiver_phone" name="receiver_phone" required>
+<label>Numéro M-Pesa du destinataire</label>
+</div>
+
+<button type="submit">Envoyer</button>
+
+<!-- 🔥 RECENT LIST BELOW -->
+<div id="recentBox"></div>
+
+</div>
+
+</form>
+</div>
+
+<!-- NAV -->
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="goHome()"><i class="fas fa-home"></i><span>Accueil</span></div>
+    <div class="nav-item" onclick="goTransactions()"><i class="fas fa-exchange-alt"></i><span>Transactions</span></div>
+    <div class="nav-item" onclick="goProfile()"><i class="fas fa-user"></i><span>Profil</span></div>
+</div>
+
+
+<script>
+
+/* ===== USER ID (MUST BE FIRST) ===== */
+const userId = "{{ session.get('user_id') or 'guest' }}";
+
+/* ===== STEP SYSTEM ===== */
+let step = 0;
+const steps = document.querySelectorAll(".step");
+const backBtn = document.getElementById("backBtn");
+const isLoggedIn = "{{ session.get('user_id') or '' }}" !== "";
+
+function updateUI(){
+    backBtn.style.display = step === 0 ? "none" : "block";
+}
+
+function nextStep(){
+    steps[step].classList.remove("active");
+    step++;
+    steps[step].classList.add("active");
+    updateUI();
+}
+
+function prevStep(){
+    if(step === 0) return;
+
+    steps[step].classList.remove("active");
+
+    if(isLoggedIn && step === 2){
+        step = 0;
+    } else {
+        step--;
+    }
+
+    steps[step].classList.add("active");
+    updateUI();
+}
+
+/* ===== VALIDATION ===== */
+function validateStep1(){
+    let montant = document.getElementById("montant").value;
+    if(!montant || montant <= 0){
+        alert("Montant invalide");
+        return;
+    }
+
+    if(isLoggedIn){
+        steps[0].classList.remove("active");
+        step = 2;
+        steps[2].classList.add("active");
+        updateUI();
+    } else {
+        nextStep();
+    }
+}
+
+function validateStep2(){
+    if(!isLoggedIn){
+        let nom = document.getElementById("nom").value;
+        let tel = document.getElementById("telephone").value;
+        if(!nom || !tel){
+            alert("Remplir les champs");
+            return;
+        }
+    }
+    nextStep();
+}
+
+/* ===== CALCUL ===== */
+document.getElementById("montant").addEventListener("input", function(){
+    let m = parseFloat(this.value)||0;
+    let kes = (m - m*0.05)*125;
+    document.getElementById("resultat").value = kes>0 ? kes.toFixed(0) : 0;
+});
+
+/* ===== RECENT RECEIVERS ===== */
+function loadRecent(){
+    let data = JSON.parse(localStorage.getItem("receivers_" + userId) || "[]");
+
+    if(data.length === 0) return;
+
+    let html = '<div class="recent-title">Récents</div>';
+
+    data.slice(0,5).forEach(r=>{
+        html += `
+        <div class="recent-item" onclick="useReceiver(\`${r.name}\`, \`${r.phone}\`)">
+            
+            <div class="recent-avatar">
+                ${r.name.charAt(0).toUpperCase()}
+            </div>
+
+            <div class="recent-info">
+                <div class="recent-name">${r.name}</div>
+                <div class="recent-phone">${r.phone}</div>
+            </div>
+
+            <div class="recent-action">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+            </div>
+
+        </div>`;
+    });
+
+    document.getElementById("recentBox").innerHTML = html;
+}
+
+function useReceiver(name, phone){
+    document.getElementById("receiver_name").value = name;
+    document.getElementById("receiver_phone").value = phone;
+}
+
+/* ===== SAVE AFTER SUBMIT ===== */
+document.getElementById("multiForm").addEventListener("submit", function(){
+
+    let name = document.getElementById("receiver_name").value;
+    let phone = document.getElementById("receiver_phone").value;
+
+    let data = JSON.parse(localStorage.getItem("receivers_" + userId) || "[]");
+
+    // 🔥 REMOVE DUPLICATES
+    data = data.filter(r => r.phone !== phone);
+
+    // ADD ON TOP
+    data.unshift({name, phone});
+
+    localStorage.setItem("receivers_" + userId, JSON.stringify(data.slice(0,5)));
+});
+
+/* ===== NAV ===== */
+function goHome(){window.location.href="/"}
+function goTransactions(){window.location.href="/transactions"}
+function goProfile(){window.location.href="/profil"}
+
+/* ===== INIT ===== */
+loadRecent();
+updateUI();
+
+</script>
+
+<button id="installBtn" class="install-btn" style="display:none;">
+    📲 Installer l'application
+</button>
+
+<script>
+let deferredPrompt;
+
+// 🔥 ANDROID INSTALL PROMPT
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+    }
+});
+
+// 🔥 REGISTER SERVICE WORKER
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js');
+}
+</script>
+
+<!-- 🔥 iOS INSTALL POPUP -->
+<div id="iosInstall" class="ios-popup" style="display:none;">
+    <p>
+        📲 Installer BoneyGram<br><br>
+        👉 Appuyez sur <b>Partager</b> (⬆️)<br>
+        👉 Puis <b>Ajouter à l’écran d’accueil</b>
+    </p>
+</div>
+
+<script>
+// Detect iPhone
+function isIos() {
+  return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+}
+
+function isInStandaloneMode() {
+  return ('standalone' in window.navigator) && (window.navigator.standalone);
+}
+
+// Show popup
+if (isIos() && !isInStandaloneMode()) {
+    setTimeout(() => {
+        document.getElementById("iosInstall").style.display = "block";
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
+</body>
+</html>

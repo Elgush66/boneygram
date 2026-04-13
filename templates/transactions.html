@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#00c853">
+
+<!-- iOS support -->
+<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>BoneyGram - Transactions</title>
+
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- APP BAR -->
+<div class="app-bar">
+    <div class="back-icon" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </div>
+    <img src="/static/images/logo.png" class="app-logo">
+    <span class="app-title">Transactions</span>
+</div>
+
+{% if grouped %}
+
+    {% for date, items in grouped.items() %}
+        <h4 class="date-title">{{ date }}</h4>
+
+        {% for t in items %}
+        <div class="tx-card" onclick="openReceipt(
+'{{ t.id }}',
+'{{ t.receiver_name }}',
+'{{ t.montant_usd }}',
+'{{ t.montant_kes|round }}',
+'{{ t.date.strftime('%d %b %Y - %H:%M') }}',
+'{{ t.statut }}'
+)">
+    
+    <div class="tx-avatar">
+        {{ t.receiver_name[0] }}
+    </div>
+
+    <div class="tx-center">
+        <p class="tx-name">{{ t.receiver_name }}</p>
+        <p class="tx-date">{{ t.date.strftime("%H:%M") }}</p>
+    </div>
+
+    <div class="tx-right">
+        <p class="tx-amount">
+            {{ t.montant_usd }} USD →
+            <b>{{ t.montant_kes|round }} KES</b>
+        </p>
+
+        {% if t.statut == "Validé" %}
+            <span class="badge success">Envoyé</span>
+        {% elif t.statut == "En attente" %}
+            <span class="badge pending">En attente</span>
+        {% else %}
+            <span class="badge failed">Rejeté</span>
+        {% endif %}
+    </div>
+
+</div>
+        {% endfor %}
+
+    {% endfor %}
+
+{% else %}
+<div class="empty-box">
+    <i class="fas fa-inbox"></i>
+    <p>Aucune transaction</p>
+</div>
+{% endif %}
+
+</div>
+
+<!-- RECEIPT MODAL -->
+<div id="receiptModal" class="modal">
+    <div class="modal-content">
+
+        <h3>BoneyGram</h3>
+        <p class="small" id="receiptTitle"></p>
+
+        <span id="r_status" class="badge"></span>
+
+        <hr>
+
+        <p><b>Destinataire:</b> <span id="r_name"></span></p>
+        <p><b>Envoyé:</b> <span id="r_usd"></span> USD</p>
+        <p><b>Reçu:</b> <span id="r_kes"></span> KES</p>
+
+        <hr>
+
+        <p id="r_date" class="small"></p>
+
+        <!-- ACTIONS -->
+        <div id="receiptActions" style="margin-top:10px;"></div>
+
+        <button onclick="closeModal()">Fermer</button>
+
+    </div>
+</div>
+
+<!-- NAV -->
+<div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()">
+        <i class="fas fa-home"></i>
+        <span>Accueil</span>
+    </div>
+
+    <div class="nav-item active">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Transactions</span>
+    </div>
+
+    <div class="nav-item" onclick="goProfile()">
+        <i class="fas fa-user"></i>
+        <span>Profil</span>
+    </div>
+</div>
+
+<script>
+
+function goHome(){ window.location.href = "/" }
+function goProfile(){ window.location.href = "/profil" }
+
+// OPEN RECEIPT
+function openReceipt(id, name, usd, kes, date, status){
+
+    document.getElementById("r_name").innerText = name;
+    document.getElementById("r_usd").innerText = usd;
+    document.getElementById("r_kes").innerText = kes;
+    document.getElementById("r_date").innerText = date;
+
+    let statusEl = document.getElementById("r_status");
+    let actions = document.getElementById("receiptActions");
+
+    statusEl.className = "badge";
+    actions.innerHTML = "";
+
+    let titleText = document.getElementById("receiptTitle");
+
+    if(status === "Validé"){
+        statusEl.innerText = "Envoyé";
+        statusEl.classList.add("success");
+
+        titleText.innerText = "A reçu";
+
+        // ✅ DOWNLOAD BUTTON
+        actions.innerHTML += `
+            <a href="/receipt/${id}" class="action-btn download">
+                📄 Télécharger
+            </a>
+        `;
+
+        // ✅ SHARE BUTTON (NEW 🔥)
+        actions.innerHTML += `
+            <button onclick="shareReceipt('${id}','${name}','${usd}','${kes}')" 
+                class="action-btn whatsapp">
+                📤 Partager
+            </button>
+        `;
+    }
+    else if(status === "En attente"){
+        statusEl.innerText = "En attente";
+        statusEl.classList.add("pending");
+
+        titleText.innerText = "Recevra";
+    }
+    else{
+        statusEl.innerText = "Rejeté";
+        statusEl.classList.add("failed");
+
+        titleText.innerText = "Annulé";
+    }
+
+    document.getElementById("receiptModal").style.display = "flex";
+}
+
+// 🔥 SHARE FUNCTION (IMPORTANT)
+function shareReceipt(id, name, usd, kes){
+
+    let url = window.location.origin + "/receipt/" + id;
+
+    let text = `💸 BoneyGram
+
+Envoyé: ${usd} USD
+Reçu: ${kes} KES
+Destinataire: ${name}
+
+Télécharger reçu: ${url}`;
+
+    // ✅ MOBILE SHARE (iPhone/Android)
+    if (navigator.share) {
+        navigator.share({
+            title: "BoneyGram Receipt",
+            text: text,
+            url: url
+        });
+    } 
+    else {
+        // fallback WhatsApp
+        let whatsappURL = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(whatsappURL, "_blank");
+    }
+}
+
+// CLOSE
+function closeModal(){
+    document.getElementById("receiptModal").style.display = "none";
+}
+
+</script>
+
+<button id="installBtn" class="install-btn" style="display:none;">
+    📲 Installer l'application
+</button>
+
+<script>
+let deferredPrompt;
+
+// 🔥 ANDROID INSTALL PROMPT
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+    }
+});
+
+// 🔥 REGISTER SERVICE WORKER
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js');
+}
+</script>
+
+<!-- 🔥 iOS INSTALL POPUP -->
+<div id="iosInstall" class="ios-popup" style="display:none;">
+    <p>
+        📲 Installer BoneyGram<br><br>
+        👉 Appuyez sur <b>Partager</b> (⬆️)<br>
+        👉 Puis <b>Ajouter à l’écran d’accueil</b>
+    </p>
+</div>
+
+<script>
+// Detect iPhone
+function isIos() {
+  return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+}
+
+function isInStandaloneMode() {
+  return ('standalone' in window.navigator) && (window.navigator.standalone);
+}
+
+// Show popup
+if (isIos() && !isInStandaloneMode()) {
+    setTimeout(() => {
+        document.getElementById("iosInstall").style.display = "block";
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
+</body>
+</html>

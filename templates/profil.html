@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Profil - BoneyGram</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+    background:linear-gradient(135deg,#eef2f7,#dfe9f3);
+}
+
+/* ===== CONTAINER ===== */
+.container{
+    max-width:420px;
+    margin:auto;
+    padding:18px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:12px;
+    margin-bottom:20px;
+
+    background:white;
+    border-radius:16px;
+
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+.back-btn{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:none;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f1f3f6;
+    cursor:pointer;
+}
+
+.back-btn:active{
+    transform:scale(0.9);
+}
+
+.title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+    font-size:18px;
+}
+
+.logo{
+    width:22px;
+}
+
+/* ===== PROFILE CARD ===== */
+.profile-box{
+    background:white;
+    padding:24px;
+    border-radius:20px;
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* AVATAR */
+.profile-avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+
+    margin:auto;
+    margin-bottom:15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:linear-gradient(135deg,#00c853,#00e676);
+    color:white;
+    font-size:30px;
+}
+
+/* NAME */
+.profile-box h2{
+    margin:10px 0 20px;
+}
+
+/* INFO */
+.profile-info{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.info-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    background:#f4f6f9;
+    padding:14px;
+    border-radius:14px;
+}
+
+.info-item i{
+    color:#555;
+}
+
+/* ===== BUTTONS ===== */
+.profile-actions{
+    margin-top:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.profile-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    padding:15px;
+    border-radius:14px;
+
+    background:#f4f6f9;
+    text-decoration:none;
+    color:#333;
+
+    font-weight:600;
+    transition:0.2s;
+}
+
+.profile-btn:active{
+    transform:scale(0.97);
+}
+
+/* LOGOUT */
+.logout{
+    background:#ffe5e5;
+    color:#d32f2f;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+
+    background:white;
+    display:flex;
+    justify-content:space-around;
+
+    padding:10px 0;
+
+    box-shadow:0 -5px 15px rgba(0,0,0,0.08);
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-size:12px;
+    color:#888;
+    cursor:pointer;
+}
+
+.nav-item i{
+    font-size:18px;
+    margin-bottom:4px;
+}
+
+/* ACTIVE */
+.nav-item.active{
+    color:#00c853;
+}
+
+/* CLICK ANIMATION */
+.nav-item:active{
+    transform:scale(0.9);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <button class="back-btn" onclick="goHome()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+
+        <div class="title">
+            <img src="/static/images/logo.png" class="logo">
+            <span>Profil</span>
+        </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="profile-box">
+
+        <div class="profile-avatar">
+            <i class="fas fa-user"></i>
+        </div>
+
+        <h2>{{ session.get('nom', 'Utilisateur') }}</h2>
+
+        <div class="profile-info">
+
+            <div class="info-item">
+                <i class="fas fa-phone"></i>
+                <span>{{ session.get('telephone', 'Non défini') }}</span>
+            </div>
+
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <span>{{ session.get('email', 'Non défini') }}</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="profile-actions">
+
+        <a href="/transactions" class="profile-btn">
+            <i class="fas fa-exchange-alt"></i>
+            Mes transactions
+        </a>
+
+        <a href="/logout" class="profile-btn logout">
+            <i class="fas fa-sign-out-alt"></i>
+            Déconnexion
+        </a>
+
+    </div>
+
+</div>
+
+<!-- NAV -->
+<div class="bottom-nav">
+
+    <div class="nav-item" onclick="goHome()">
+        <i class="fas fa-home"></i>
+        <span>Accueil</span>
+    </div>
+
+    <div class="nav-item" onclick="goTransactions()">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Transactions</span>
+    </div>
+
+    <div class="nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Profil</span>
+    </div>
+
+</div>
+
+<script>
+function goHome(){ window.location.href = "/" }
+function goTransactions(){ window.location.href = "/transactions" }
+</script>
+
+</body>
+</html>
