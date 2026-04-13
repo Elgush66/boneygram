@@ -7,6 +7,7 @@ from flask_mail import Mail, Message
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.pagesizes import mm
 from reportlab.lib.styles import getSampleStyleSheet
+import os
 
 
 
@@ -127,8 +128,9 @@ app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'elgush66@gmail.com'
-app.config['MAIL_PASSWORD'] = 'pvpjhdcltgqdoiue'
+
+app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD")
 app.secret_key = "super_secret_key_123"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
