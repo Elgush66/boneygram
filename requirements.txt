@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Mail
 reportlab
 gunicorn
+psycopg2-binary
