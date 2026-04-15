@@ -250,6 +250,8 @@ if ('serviceWorker' in navigator) {
 
 <!-- 🔥 iOS INSTALL POPUP -->
 <div id="iosInstall" class="ios-popup" style="display:none;">
+    <span onclick="closeIosPopup()" style="float:right;cursor:pointer;">✖</span>
+
     <p>
         📲 Installer BoneyGram<br><br>
         👉 Appuyez sur <b>Partager</b> (⬆️)<br>
@@ -272,6 +274,10 @@ if (isIos() && !isInStandaloneMode()) {
     setTimeout(() => {
         document.getElementById("iosInstall").style.display = "block";
     }, 3000);
+}
+
+function closeIosPopup(){
+    document.getElementById("iosInstall").style.display = "none";
 }
 </script>
 

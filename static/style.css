@@ -1179,16 +1179,30 @@ body {
     z-index: 999;
 }
 
-.ios-popup {
+
+a{
+    text-decoration:none;
+    color:#90caf9;
+}
+
+.ios-popup{
     position: fixed;
-    bottom: 90px;
+    bottom: 90px; /* 👈 move it ABOVE bottom nav */
     left: 50%;
     transform: translateX(-50%);
-    background: white;
-    padding: 15px;
-    border-radius: 15px;
+    
+    width: 90%;
+    max-width: 400px;
+
+    background: rgba(255,255,255,0.95);
+    color: #333;
+
+    padding: 16px;
+    border-radius: 16px;
+
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    z-index: 9999;
+
     text-align: center;
-    width: 85%;
-    z-index: 999;
 }

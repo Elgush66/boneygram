@@ -249,7 +249,7 @@ def index():
 
         msg = Message(
             subject=subject,
-            sender=("BoneyGram", "boneygram30@gmail.com"),
+            sender=("BoneyGram", "elgush66@gmail.com"),
             recipients=[
                 'gustaveshumbusho17@gmail.com',
                 'Kambulubonheur510@gmail.com'
@@ -446,7 +446,7 @@ def approve(id):
         # =====================
     msg_admin = Message(
             subject="Transaction envoyée - BoneyGram",
-            sender=("BoneyGram", "boneygram30@gmail.com"),
+            sender=("BoneyGram", "elgush66@gmail.com"),
             recipients=[
                 'gustaveshumbusho17@gmail.com',
                 'Kambulubonheur510@gmail.com',
