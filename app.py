@@ -10,7 +10,6 @@ from reportlab.lib.styles import getSampleStyleSheet
 import os
 
 
-
 def generate_receipt(t):
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
     from reportlab.lib.pagesizes import mm
@@ -147,6 +146,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+with app.app_context():
+    db.create_all()
 
 # DATABASE
 class Transaction(db.Model):
